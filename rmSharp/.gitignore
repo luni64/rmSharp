@@ -1,0 +1,5 @@
+**/.vs/*
+**/bin/*
+**/obj/*
+Firmware/**/build/*
+Firmware/**/lib/**/examples
