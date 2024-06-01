@@ -13,25 +13,26 @@ using static System.Console;
 
 namespace rmSharp.Examples
 {
-    internal class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            DB.sqLiteFile = "../../../../example_databases/US_Presidents.rmTree";  // database file to be set only once 
+            DB.sqLiteFile = "../../../../example_databases/US_Presidents.rmTree";  // database file
 
             using (var db = new DB())
             {
-                var query = db.Names                        // query the Names table
-                    .Where(n => n.IsPrimary == true)        // filter for primary names
-                    .Select(n=> new { n.Surname, n.Given}); // we only need surname and given name here
+                var primaryNames = db.Names
+                    .Where(n => n.NameType == NameTypes.Primary)  // get all primary names from the database...
+                    .OrderBy(n => n.Surname);                     // ... and order them by surname
 
-                WriteLine(query.ToQueryString() + "\n\n");  // This prints the auto-generated SQL which was sent to the database
-                
-                foreach (var entry in query)
+
+                foreach (var name in primaryNames)
                 {
-                    WriteLine(entry.Surname + " " + entry.Given);
+                    WriteLine(name.Surname + " " + name.Given);
                 }
-            }          
+
+                WriteLine(primaryNames.ToQueryString());
+            }
         }
     }
 }
