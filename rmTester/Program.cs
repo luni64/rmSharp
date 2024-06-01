@@ -4,20 +4,15 @@ using Task = rmSharp.Task;
 
 namespace rmtester
 {
-
-
     internal class Program
     {
         static void Main(string[] args)
         {
             ////DB.sqLiteFile = "oberhauser-niggl.rmtree";
-           DB.sqLiteFile = "empty.rmtree";
-
-
+            DB.sqLiteFile = "empty.rmtree";
 
             using (var db = new DB())
             {
-
                 Place Waging = db.Places.GetOrMake("Waging", "Waging,Bayern,Deutschland");
                 Place Traunstein = db.Places.GetOrMake("Traustein", "Traunstein, Bayern,Deutschland");
 
@@ -59,20 +54,7 @@ namespace rmtester
 
 
                 var x = db.SaveChanges();
-            }
-
-
-
-
-            using (var db = new DB())
-            {
-                //new Example.MaleAncestrors().Execute(Surname: "Schlagbauer", Given: "Paula Franziska Christiana");
-                //new Example.DecendantTree().Execute("Oberhauser", "Johann");
-                //new Example.AddPerson().Execute();
-                //new Example.Pedigree().Execute(Surname: "Niggl", Given: "Lutz Günther");
-                //new Example.MultiplePrimaryNames().Execute();
-                //new Example.MultipleParents().Execute();
-            }
+            }           
         }
     }
     internal static class Helpers
@@ -88,7 +70,7 @@ namespace rmtester
             return person;
         }
 
-               
+
         public static Place GetOrMake(this DbSet<Place> places, string name, string abbreviation)
         {
             Place? place = places.FirstOrDefault(p => p.Name == name && p.Abbrev == abbreviation); // do we have an entry?
