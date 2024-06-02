@@ -20,16 +20,4 @@
     <ProjectReference Include="..\rmSharp\rmSharp.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="GivenFemales.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="GivenMales.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="surnames.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
