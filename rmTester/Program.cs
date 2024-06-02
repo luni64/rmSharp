@@ -1,13 +1,96 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Geolocation;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite.Query.Internal;
+using Newtonsoft.Json;
 using rmSharp;
+
 using Task = rmSharp.Task;
 
 namespace rmtester
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static List<string> femaleNames = File.ReadLines("GivenFemales.txt").ToList();
+        static List<string> maleNames = File.ReadLines("GivenMales.txt").ToList();
+        static List<string> surnames = File.ReadAllLines("surnames.txt").ToList();
+        static void init()
         {
+
+            var x = surnames.Select(x => x.Split(',')[0]).ToList();
+            File.WriteAllLines("Surnames.txt", x);
+
+            //List<(string name, string sex)> l = [];
+
+            //var given = File.ReadAllLines("C:\\Users\\lutz\\Downloads\\names\\yob1880.txt").ToList();
+            //femaleNames = given.Where(x => x.Split(",")[1] == "F").Select(l => l.Split(",")[0]).ToList();
+            //maleNames = given.Where(x => x.Split(",")[1] == "M").Select(l => l.Split(",")[0]).ToList();
+
+            //File.WriteAllLines("GivenFemales.txt", femaleNames);
+            //File.WriteAllLines("GivenMales.txt", maleNames);
+
+        }
+
+
+
+        static Random rnd = new();
+
+
+        //Coordinate origin = new Coordinate(47.93298128769468, 12.734182832828568);
+        //Coordinate destination = new Coordinate(47.86864836156481, 12.642570991157138);
+
+        //double distance = GeoCalculator.GetDistance(origin, destination, distanceUnit: DistanceUnit.Kilometers); 
+
+        static List<dynamic> settings = JsonConvert.DeserializeObject<List<dynamic>>(
+            """                           
+            [
+                {
+                    "startYear":          1630,
+                    "startPlace":         "Cleveland,Ohio,US",  // choose any place in the US listed in the us_cities.txt file 
+                    "nrOfGenerations":    5,
+                    "meanChildNr":        5,
+                    "sigmaChildNr":       4,  
+                    "marriageDistance":   50, // maximal distance from birth place in km for bouth spouses
+                    "meanAgeAtMarriage":  28,  
+                    "sigmaAgeAtMarriage": 10, // standard deviation (about 68% of the spouses will have an age of mean +/- sigma)
+                },
+                {
+                    "startYear":         1750,
+                    "nrOfGenerations":   3,
+                    "averageChild#":     3,
+                    "averageChildSigma": 5,
+                }
+            ]            
+            """) ?? new List<dynamic>(); // generate empty list if settings string is malformed
+            
+
+        static void Main(string[] args)
+        {            
+
+            foreach (var treeSetting in settings)
+            {
+                Console.WriteLine(treeSetting["nrOfGenerations"]);
+            }
+
+            //var values = objects.Select(s => s.id_employe).ToList();
+
+
+            DB.sqLiteFile = "empty.rmtree";
+
+            using (var db = new DB())
+            {
+                makeTree(db, 1650);
+
+                db.SaveChanges();
+            }
+
+            return;
+
+
+
+
+
+
+
             ////DB.sqLiteFile = "oberhauser-niggl.rmtree";
             DB.sqLiteFile = "empty.rmtree";
 
@@ -53,8 +136,87 @@ namespace rmtester
 
 
 
-                var x = db.SaveChanges();
-            }           
+                var xxx = db.SaveChanges();
+            }
+        }
+
+        static Person makePerson(DB db, int year, Sex sex)
+        {
+            var givens = sex == Sex.Male ? maleNames : femaleNames;
+            var given = new Name
+            {
+                Given = givens.ElementAt(rnd.Next(0, givens.Count)),
+                Surname = surnames.ElementAt(rnd.Next(0, surnames.Count))
+            };
+
+            var birthday = new DateTime(year, 1, 1).AddDays(rnd.Next(-300, 300));
+            var deathday = birthday.AddDays(rnd.Next(25 * 356, 100 * 356));
+
+            var person = new Person();
+            person.Names.Add(given);
+            person.Sex = sex;
+            person.Events.Add(new PersonEvent { EventType = 1, Date = new RMDate(birthday) });
+            person.Events.Add(new PersonEvent { EventType = 2, Date = new RMDate(deathday) });
+
+            db.Persons.Add(person);
+
+            return person;
+        }
+
+        static Family makeFamily(DB db, int aproxYear, Person? parent = null)
+        {
+            Person husband, wife;
+
+            if (parent == null)
+            {
+                husband = makePerson(db, aproxYear, Sex.Male);
+                wife = makePerson(db, aproxYear, Sex.Female);
+            }
+            else
+            {
+                if (parent.Sex == Sex.Female)
+                {
+                    wife = parent;
+                    husband = makePerson(db, aproxYear, Sex.Male);
+                }
+                else
+                {
+                    husband = parent;
+                    wife = makePerson(db, aproxYear + rnd.Next(-5, 10), Sex.Female);
+                }
+            }
+
+            var family = new Family(husband, wife);
+            RMDate mariageDate = husband.Events.First(e => e.EventType == 1).Date;
+            family.Events.Add(new FamilyEvent { EventType = 300, Date = mariageDate });
+
+
+            for (int i = 0; i < rnd.Next(0, 10); i++)
+            {
+                var sex = rnd.Next(2) == 0 ? Sex.Male : Sex.Female;
+                var child = makePerson(db, aproxYear, sex);
+                child.Names.First().Surname = husband.Names.First().Surname;
+                family.AddChild(child);
+            }
+            db.Families.Add(family);
+
+            return family;
+        }
+
+
+        static Family? makeTree(DB db, int year, Person? parent = null, int generation = 0)
+        {
+            if (generation++ > 5) return null;
+
+            var family = makeFamily(db, year, parent);
+            if (family == null) return null;
+
+            foreach (var child in family.Children)
+            {
+                makeTree(db, 1800, child, generation);
+            }
+            return family;
+
         }
     }
     internal static class Helpers

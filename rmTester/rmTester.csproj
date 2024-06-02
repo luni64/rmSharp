@@ -8,7 +8,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="empty.rmtree" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Geolocation" Version="1.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\rmSharp\rmSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="GivenFemales.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="GivenMales.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="surnames.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
