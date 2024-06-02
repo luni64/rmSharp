@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "05_DescendantTree", "Exampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "04_MulitpleFamilies", "Examples\04_FindMultipleFamilies\04_MulitpleFamilies.csproj", "{51626AC7-FCDC-4087-B942-EDC5CDBBD38C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreeGenerator", "Examples\10_TreeGenerator\TreeGenerator.csproj", "{49BAF432-E0FE-4F0E-AAA3-31A00C337A9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{51626AC7-FCDC-4087-B942-EDC5CDBBD38C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51626AC7-FCDC-4087-B942-EDC5CDBBD38C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51626AC7-FCDC-4087-B942-EDC5CDBBD38C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49BAF432-E0FE-4F0E-AAA3-31A00C337A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49BAF432-E0FE-4F0E-AAA3-31A00C337A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49BAF432-E0FE-4F0E-AAA3-31A00C337A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49BAF432-E0FE-4F0E-AAA3-31A00C337A9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +69,7 @@ Global
 		{F67E333E-77A2-423A-BA7A-D5A9D189731B} = {6A783C0E-ADA4-45D6-BBE7-1474ECCE7B03}
 		{38F99017-1685-4501-9E26-9D2958AF76B2} = {6A783C0E-ADA4-45D6-BBE7-1474ECCE7B03}
 		{51626AC7-FCDC-4087-B942-EDC5CDBBD38C} = {6A783C0E-ADA4-45D6-BBE7-1474ECCE7B03}
+		{49BAF432-E0FE-4F0E-AAA3-31A00C337A9C} = {6A783C0E-ADA4-45D6-BBE7-1474ECCE7B03}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C727B52-36CE-4BAF-9000-C07866DD55F8}
