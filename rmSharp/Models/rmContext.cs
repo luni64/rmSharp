@@ -495,6 +495,7 @@ namespace rmSharp
             {
                 entity.ToTable("PlaceTable");
                 entity.HasKey(e => e.PlaceId);
+                entity.Ignore(e => e.Location);
                 entity.Property(e => e.PlaceId).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.PlaceId).HasColumnName("PlaceID");
