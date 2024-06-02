@@ -20,7 +20,7 @@ namespace rmtester
                 },
                 {
                     "startYear":          1580,
-                    "startCity":          "San Francisco",  // choose any place in the US listed in the us_cities.txt file 
+                    "startCity":          "San Francisco",  
                     "startState":         "California",
                     "nrOfGenerations":    3,                  
                 },
