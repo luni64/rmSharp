@@ -5,14 +5,22 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace rmSharp
-{ 
+{
     public partial class Family
     {
         public Family() { }
-        public Family(Person Husband, Person Wife)
+        public Family(Person spouse1, Person spouse2)
         {
-            this.Husband = Husband;
-            this.Wife = Wife;
+            if (spouse1.Sex == Sex.Male)  // don't handle more complicated cases here
+            {
+                Husband = spouse1;
+                Wife = spouse2;
+            }
+            else
+            {
+                Husband = spouse2;
+                Wife = spouse1;
+            }
         }
         #region Properties ----------------------------------------------
         public long FamilyId { get; set; }
