@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "05_DescendantTree", "Exampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "04_MulitpleFamilies", "Examples\04_FindMultipleFamilies\04_MulitpleFamilies.csproj", "{51626AC7-FCDC-4087-B942-EDC5CDBBD38C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreeGenerator", "Examples\10_TreeGenerator\TreeGenerator.csproj", "{49BAF432-E0FE-4F0E-AAA3-31A00C337A9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "07_TreeGenerator", "Examples\10_TreeGenerator\07_TreeGenerator.csproj", "{49BAF432-E0FE-4F0E-AAA3-31A00C337A9C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "06_AddPerson", "Examples\06_AddPerson\06_AddPerson.csproj", "{2AA67540-C2AB-4B84-AC1E-2F2F023522AB}"
 EndProject

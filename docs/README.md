@@ -336,7 +336,7 @@ Jefferson Thomas (*)
 ```
 
 
-**For more examples, please refer to the [Example folder](Examples/)**
+**For more examples, please refer to the [Example folder](../src/Examples/)**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
