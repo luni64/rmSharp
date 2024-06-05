@@ -40,7 +40,7 @@ namespace rmSharp
         public virtual DbSet<RoleTable> RoleTables { get; set; }
         public virtual DbSet<Source> Sources { get; set; }
         public virtual DbSet<SourceTemplateTable> SourceTemplateTables { get; set; }
-        public virtual DbSet<TagTable> TagTables { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<TaskLinkTable> TaskLinkTables { get; set; }
         public virtual DbSet<Task> TaskTables { get; set; }
         public virtual DbSet<WebTag> WebTags { get; set; }
@@ -123,7 +123,7 @@ namespace rmSharp
                 entity.HasOne(ct => ct.Child).WithMany(p => p.ParentRelations).HasForeignKey(ct => ct.ChildId);
                 //entity.HasOne(ct=>ct.Child).WithMany().HasForeignKey(ct=>ct.ChildId)
 
-               
+
                 entity.HasIndex(e => e.FamilyId, "idxChildFamilyID");
                 entity.HasIndex(e => e.ChildId, "idxChildID");
                 entity.HasIndex(e => e.ChildOrder, "idxChildOrder");
@@ -356,7 +356,7 @@ namespace rmSharp
                 entity.Property(e => e.EndId).HasColumnName("EndID");
                 entity.Property(e => e.GroupId).HasColumnName("GroupID");
                 entity.Property(e => e.StartId).HasColumnName("StartID");
-                entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
+                //entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT");//.HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
             });
 
             modelBuilder.Entity<MediaLinkTable>(entity =>
@@ -557,31 +557,42 @@ namespace rmSharp
                 entity.HasIndex(e => e.Name, "idxSourceTemplateName");
             });
 
-            modelBuilder.Entity<TagTable>(entity =>
+            modelBuilder.Entity<Tag>(entity =>
             {
                 entity.ToTable("TagTable");
                 entity.HasKey(e => e.TagId);
+                entity.HasDiscriminator(e => e.TagType).HasValue(-1);
+
                 entity.Property(e => e.TagId).HasColumnName("TagID").ValueGeneratedOnAdd();
+                entity.Property(e => e.Name).HasColumnName("TagName");
 
                 entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
+
+                entity.HasMany(t => t.Entries).WithOne().HasForeignKey(g => g.GroupId).HasPrincipalKey(t => t.TagValue);
+
                 entity.HasIndex(e => e.TagType, "idxTagType");
+            });
+            modelBuilder.Entity<Group>(entity =>
+            {
+                entity.Ignore(e => e.Persons);
+                entity.HasDiscriminator(e => e.TagType).HasValue(0);
             });
 
             modelBuilder.Entity<TaskLinkTable>(entity =>
-            {
-                entity.ToTable("TaskLinkTable");
-                entity.HasKey(e => e.LinkId);
-                entity.Property(e => e.LinkId).HasColumnName("LinkID").ValueGeneratedOnAdd();
+        {
+            entity.ToTable("TaskLinkTable");
+            entity.HasKey(e => e.LinkId);
+            entity.Property(e => e.LinkId).HasColumnName("LinkID").ValueGeneratedOnAdd();
 
-                entity.HasDiscriminator<long>(e => e.OwnerType).HasValue(-1);
+            entity.HasDiscriminator<long>(e => e.OwnerType).HasValue(-1);
 
-                entity.Property(e => e.OwnerId).HasColumnName("OwnerID");
-                entity.Property(e => e.TaskId).HasColumnName("TaskID");
-                entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
+            entity.Property(e => e.OwnerId).HasColumnName("OwnerID");
+            entity.Property(e => e.TaskId).HasColumnName("TaskID");
+            entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
 
 
-                entity.HasIndex(e => e.OwnerId, "idxTaskOwnerID");
-            });
+            entity.HasIndex(e => e.OwnerId, "idxTaskOwnerID");
+        });
             modelBuilder.Entity<TaskPerson>(e =>
             {
                 e.HasDiscriminator<long>(e => e.OwnerType).HasValue(0);
