@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace rmSharp
@@ -31,26 +32,43 @@ namespace rmSharp
         }
 
 
-        //public static Place GetOrMake(this DbSet<Place> places, string name, string abbreviation)
-        //{
-        //    Place? place = places.FirstOrDefault(p => p.Name == name && p.Abbrev == abbreviation);
-        //    if (place == null)
-        //    {
-        //        place = new Place
-        //        {
-        //            PlaceType = 0,
-        //            Name = name,
-        //            Abbrev = abbreviation
-        //        };
-        //        places.Add(place);
-        //    }
-        //    return place;
-        //}
-
         public static long eventType(this DbSet<FactType> facts, string EventName)
         {
             return facts.Where(f => f.Name == EventName).Select(f => f.FactTypeId).FirstOrDefault();
         }
 
+
+        public static IEnumerable<(long startId, long endId)> GetIdRanges(this IEnumerable<Person> persons)
+        {
+            long startId = persons.First().PersonId;
+            long endId = startId;
+
+            foreach (var person in persons.Skip(1))
+            {
+                long cur = person.PersonId;
+                if (cur - endId != 1)
+                {
+                    yield return (startId, endId);
+                    startId = cur;
+                }
+                endId = cur;
+            }
+            yield return (startId, endId);
+        }
+
+        public static Group MakeGroup(this DB db, string name)
+        {
+            var grp = db.Tags.Where(g => g.TagType == 0);
+            var tagValue = grp.Any() ? grp.Max(g => g.TagValue) +1 : 1000;
+
+            Group group = new Group()
+            {
+                Name = name,
+                TagValue = tagValue
+            };
+
+            db.Tags.Add(group);
+            return group;
+        }
     }
 }

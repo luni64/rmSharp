@@ -1,14 +1,13 @@
 ﻿using DelegateDecompiler;
 using global::Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using rmSharp.Microsoft.EntityFrameworkCore.Query;
 using System;
-using System.Data.Common;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace rmSharp
 {
@@ -38,20 +37,30 @@ namespace rmSharp
 
     }
 
-    public class SQLiteExtensionInterceptor : IDbConnectionInterceptor
-    {
-        public DbConnection ConnectionCreated(ConnectionCreatedEventData eventData, DbConnection result)
-        {
-            var sqliteConnection = (SqliteConnection)result;
-            sqliteConnection.EnableExtensions();
-            sqliteConnection.LoadExtension(@"unifuzz64.dll");
-            return sqliteConnection;
-        }
-    }
-
     public class DB : rmContext
     {
-        public DB() : base(makeOptions()) { }
+        public DB() : base(makeOptions())
+        {
+         
+            // unfortuntatly the TagTable is a mess. -> We need to handle TagValue generation manually 
+            ChangeTracker.Tracking += ChangeTracker_Tracking;
+
+            var groups = Tags.Where(g => g.TagType == 0);
+            curGroupId = groups.Any() ? groups.Max(g => g.TagValue) : 1000;  // get the current max value of TagValue from the tags table
+        }
+
+        private long curGroupId;  // current group id
+
+        private void ChangeTracker_Tracking(object? sender, EntityTrackingEventArgs e)
+        {
+            if (e.Entry.Entity is Group group)
+            {
+                if (group.TagValue == 0)  // we need to calculate the TagValue (id) for new groups manually. The value is needed for tracking
+                {                   
+                    group.TagValue = ++curGroupId; 
+                }
+            }
+        }        
 
         public static string sqLiteFile { get; set; } = string.Empty;
 
@@ -60,34 +69,41 @@ namespace rmSharp
             var opt = new DbContextOptionsBuilder<rmContext>();
 
             opt
+                .UseSqlite($"Data Source={sqLiteFile}")
                 .AddDelegateDecompiler()
                 .AddInterceptors(new SQLiteExtensionInterceptor())
-                .UseSqlite($"Data Source={sqLiteFile}")
-                .UseLazyLoadingProxies();
-            ;
+                .AddInterceptors(new MaterializeGroupsInterceptor())
+                .UseLazyLoadingProxies()
+                .EnableSensitiveDataLogging(true);            
 
             return opt.Options;
         }
 
         public override int SaveChanges()
         {
-            var changedEntriesCopy = ChangeTracker.Entries()
-                        .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted)
-                        .ToList();
             var saveTime = DateTime.Now;
 
-            foreach (var entityEntry in changedEntriesCopy)
+            var changedEntries = ChangeTracker
+                .Entries()
+                .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified || e.State == EntityState.Deleted)
+                .ToList();
+
+            foreach (var entityEntry in changedEntries)
             {
                 if (entityEntry.Metadata.FindProperty("ChangeDate") != null)
                 {
                     entityEntry.Property("ChangeDate").CurrentValue = saveTime;
                 }
-                else Trace.WriteLine("change date error");
+
+                if (entityEntry.Entity is Group group)
+                {
+                    group.UpdateRanges();  //calculate the id ranges from the list of persons before saving. 
+                }
             }
             return base.SaveChanges();
         }
 
-
-
+        public IQueryable<Group> Groups => Tags.OfType<Group>();
     }
 }
+
