@@ -32,7 +32,7 @@ namespace rmSharp
         public virtual DbSet<FantypeTable> FantypeTables { get; set; }
         public virtual DbSet<GroupEntry> GroupEntries { get; set; }
         public virtual DbSet<MediaLinkTable> MediaLinkTables { get; set; }
-        public virtual DbSet<Medium> MultimediaTables { get; set; }
+        public virtual DbSet<Medium> MultimediaTable { get; set; }
         public virtual DbSet<Name> Names { get; set; }
         public virtual DbSet<Payload> PayloadTables { get; set; }
         public virtual DbSet<Person> Persons { get; set; }
