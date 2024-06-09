@@ -14,7 +14,7 @@ namespace rmSharp
         public long? OwnerId { get; set; }
         public long? AddressNum { get; set; }
         public string? Details { get; set; }
-        public double ChangeDate { get; set; } = DateTime.Now.toUTCModDate();
+        public DateTime ChangeDate { get; set; }
     }
 
     // The following (virtual) Tables are requiered to model a dicriminator based M:N relationship
