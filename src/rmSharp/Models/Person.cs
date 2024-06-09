@@ -55,8 +55,6 @@ namespace rmSharp
         #region navigation -------------------------------------------------
 
         public virtual ICollection<ChildInfo> ParentRelations { get; set; } = [];
-        public virtual ICollection<Family> _familiesF { get; set; } = [];
-        public virtual ICollection<Family> _familiesM { get; set; } = [];
         public virtual ICollection<Name> Names { get; set; } = [];
         public virtual ICollection<Address> Addresses { get; set; } = [];
         public virtual ICollection<PersonEvent> Events { get; set; } = [];
@@ -64,24 +62,11 @@ namespace rmSharp
         public virtual ICollection<PersonWebTag> WebTags { get; set; } = [];
         public virtual ICollection<Medium> Media { get; set; } = [];
         public virtual ICollection<Task> Tasks { get; set; } = [];
-
+        internal protected virtual ICollection<Family> _familiesF { get; set; } = [];
+        internal protected virtual ICollection<Family> _familiesM { get; set; } = [];
 
         [Decompile]
-        public Name PrimaryName
-        //{
-        //    get
-        //    {
-        //        return db.Names
-        //                .Where(n => n.IsPrimary &&
-        //                    db.Persons.Where(p => p.Sex == Sex.Female)
-        //                    .Select(p => p.PersonId)
-        //                    .Contains(n.OwnerId)
-        //                );
-        //    }
-        //}
-        => Names.First(n => n.NameType == NameTypes.Primary);
-
-
+        public Name PrimaryName => Names.First(n => n.NameType == NameTypes.Primary);
 
         [Decompile]
         public ICollection<Family> Families => _familiesF.Union(_familiesM).ToList();
@@ -91,9 +76,6 @@ namespace rmSharp
 
         #endregion
 
-
         public override string ToString() => $"{PrimaryName.Surname} {PrimaryName.Given}";
-
     }
-
 }
