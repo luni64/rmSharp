@@ -17,11 +17,12 @@ namespace rmSharp
         #region Models
 
         public virtual DbSet<AddressLinkTable> AddressLinkTables { get; set; }
-        public virtual DbSet<Address> AddressTable { get; set; }
-        public virtual DbSet<AncestryTable> AncestryTables { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<Repository> Repositories { get; set; }
+        public virtual DbSet<AncestryTable> AncestryTable { get; set; }
         public virtual DbSet<ChildInfo> ChildTable { get; set; }
         public virtual DbSet<CitationLinkTable> CitationLinkTables { get; set; }
-        public virtual DbSet<Citation> Citations { get; set; }
+        public virtual DbSet<Citation> Citations { get; set; }       
         public virtual DbSet<ConfigTable> ConfigTables { get; set; }
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<ExclusionTable> ExclusionTables { get; set; }
@@ -60,7 +61,7 @@ namespace rmSharp
                 entity.Property(e => e.AddressId).HasColumnName("AddressID");
                 entity.Property(e => e.OwnerId).HasColumnName("OwnerID");
 
-                entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toDateTime(), e => e.toUTCModDate());
+                entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
             }); // dicriminator based M:N relationship  https://stackoverflow.com/a/77587113/3866165
             modelBuilder.Entity<AddressPerson>(entity =>
             {
@@ -82,6 +83,7 @@ namespace rmSharp
             {
                 entity.ToTable("AddressTable");
                 entity.HasKey(e => e.AddressId);
+                entity.HasDiscriminator<long>(e => e.AddressType).HasValue(0);  // dummy value, won't compile without value
 
                 entity.Property(e => e.AddressId).ValueGeneratedNever().HasColumnName("AddressID");
                 entity.Property(e => e.Url).HasColumnName("URL");
@@ -89,6 +91,12 @@ namespace rmSharp
 
                 entity.HasIndex(e => e.Name, "idxAddressName");
             });
+            modelBuilder.Entity<Repository>(entity =>
+            {
+                entity.ToTable("AddressTable");
+                entity.HasDiscriminator<long>(e => e.AddressType).HasValue(1);
+            });
+
 
             modelBuilder.Entity<AncestryTable>(entity =>
             {
@@ -134,7 +142,7 @@ namespace rmSharp
             {
                 entity.ToTable("CitationTable");
                 entity.HasKey(e => e.CitationId);
-
+              
                 entity.Property(e => e.CitationId).HasColumnName("CitationID").ValueGeneratedOnAdd();
                 entity.Property(e => e.SourceId).HasColumnName("SourceID");
                 entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
@@ -151,6 +159,7 @@ namespace rmSharp
                 entity.HasIndex(e => e.SourceId, "idxCitationSourceID");
             });
 
+    
             modelBuilder.Entity<CitationLinkTable>(entity =>
             {
                 entity.ToTable("CitationLinkTable");
@@ -174,7 +183,7 @@ namespace rmSharp
             });
             modelBuilder.Entity<EventCitationLink>(entity =>
             {
-                entity.ToTable("CitationLinkTable").HasDiscriminator<long>(e => e.OwnerType).HasValue(2);
+                entity.ToTable("CitationLinkTable").HasDiscriminator<long>(e => e.OwnerType).HasValue(2);               
             });
             modelBuilder.Entity<NameCitationLink>(entity =>
             {
@@ -535,8 +544,8 @@ namespace rmSharp
 
                 entity.HasMany(e => e.WebTags).WithOne().HasForeignKey(e => e.OwnerId);
 
-                entity.HasMany(s => s.Repositories).WithMany().UsingEntity<RepositorySource>(
-                    l => l.HasOne<Address>().WithMany().HasForeignKey(e => e.AddressId),
+                entity.HasMany(s => s.Repositories).WithMany(r=>r.Sources).UsingEntity<RepositorySource>(
+                    l => l.HasOne<Repository>().WithMany().HasForeignKey(e => e.AddressId),
                     r => r.HasOne<Source>().WithMany().HasForeignKey(e => e.OwnerId));
 
                 entity.HasMany(p => p.Media).WithMany().UsingEntity<MediaSourceLink>(
