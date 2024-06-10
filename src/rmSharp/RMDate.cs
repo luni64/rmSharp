@@ -49,19 +49,22 @@ namespace rmSharp
             StringBuilder sb = new();
 
             sb.Append((char)dateType);
-            sb.Append((char)rangeType);
-            sb.Append((char)eraFirst);
-            sb.Append(year.ToString("D4"));
-            sb.Append(month.ToString("D2"));
-            sb.Append(day.ToString("D2"));
-            sb.Append(".");
-            sb.Append((char)certFirst);
-            sb.Append((char)eraSecond);
-            sb.Append(year2.ToString("D4"));
-            sb.Append(month2.ToString("D2"));
-            sb.Append(day2.ToString("D2"));
-            sb.Append(".");
-            sb.Append((char)certSecond);
+            if (dateType != DateType.NULL)
+            {
+                sb.Append((char)rangeType);
+                sb.Append((char)eraFirst);
+                sb.Append(year.ToString("D4"));
+                sb.Append(month.ToString("D2"));
+                sb.Append(day.ToString("D2"));
+                sb.Append(".");
+                sb.Append((char)certFirst);
+                sb.Append((char)eraSecond);
+                sb.Append(year2.ToString("D4"));
+                sb.Append(month2.ToString("D2"));
+                sb.Append(day2.ToString("D2"));
+                sb.Append(".");
+                sb.Append((char)certSecond);
+            }
 
             return sb.ToString(); ;
         }
@@ -118,13 +121,18 @@ namespace rmSharp
             dateType = DateType.NULL;
         }
 
-        public RMDate(DateTime dt, Certainty c = Certainty.Certain)
+        public RMDate(DateTime? dt, Certainty c = Certainty.Certain)
         {
-            dateType = DateType.Standard;
-            year = dt.Year;
-            month = dt.Month;
-            day = dt.Day;
+            if (dt.HasValue)
+            {
+                dateType = DateType.Standard;
+                year = dt.Value.Year;
+                month = dt.Value.Month;
+                day = dt.Value.Day;
+            }
+            else dateType = DateType.NULL;
         }
+
 
         public RMDate(string s)
         {
