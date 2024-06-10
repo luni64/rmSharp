@@ -24,7 +24,7 @@ namespace rmSharp.Examples
 
                 Person? root = db
                    .Persons
-                   .Where(p => /*p.PrimaryName.Surname == "Dolfin" &&*/ p.PrimaryName.Given == "Goronwy")
+                   .Where(p => p.PrimaryName.Given == "Goronwy")
                    .FirstOrDefault();
 
                 if (root != null)
