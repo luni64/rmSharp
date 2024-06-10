@@ -158,8 +158,7 @@ namespace rmSharp
                 entity.HasIndex(e => e.CitationName, "idxCitationName");
                 entity.HasIndex(e => e.SourceId, "idxCitationSourceID");
             });
-
-    
+                
             modelBuilder.Entity<CitationLinkTable>(entity =>
             {
                 entity.ToTable("CitationLinkTable");
@@ -640,6 +639,9 @@ namespace rmSharp
                 entity.Property(e => e.SortDate1).HasColumnType("BIGINT");
                 entity.Property(e => e.SortDate2).HasColumnType("BIGINT");
                 entity.Property(e => e.SortDate3).HasColumnType("BIGINT");
+                entity.Property(e => e.StartDate).HasColumnName("Date1").HasConversion(rmd => rmd.toRmDatestring(), ds => new rmSharp.RMDate(ds));
+                entity.Property(e => e.EditDate).HasColumnName("Date2").HasConversion(rmd => rmd.toRmDatestring(), ds => new rmSharp.RMDate(ds));
+                entity.Property(e => e.EndDate).HasColumnName("Date3").HasConversion(rmd => rmd.toRmDatestring(), ds => new rmSharp.RMDate(ds));
                 entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
 
                 entity.HasIndex(e => e.Name, "idxTaskName");

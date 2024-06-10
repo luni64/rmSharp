@@ -7,15 +7,21 @@ namespace rmSharp
 {
     public partial class Task
     {
+        public Task() { }
+        public Task(string name, DateTime? startDate = null)
+        {
+            this.Name = name;
+            StartDate = new RMDate(startDate);
+        }
         public long TaskId { get; set; }
         public long TaskType { get; set; }
         public string RefNumber { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public long Status { get; set; }
         public long Priority { get; set; }
-        public string Date1 { get; set; } = string.Empty;
-        public string Date2 { get; set; } = string.Empty;
-        public string Date3 { get; set; } = string.Empty;
+        public RMDate StartDate { get; set; } = new RMDate();
+        public RMDate EditDate { get; set; } = new RMDate();
+        public RMDate EndDate { get; set; } = new RMDate();
         public long SortDate1 { get; set; }
         public long SortDate2 { get; set; }
         public long SortDate3 { get; set; }
