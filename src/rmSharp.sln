@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "10_TreeGenerator", "Example
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "06_AddPerson", "Examples\06_AddPerson\06_AddPerson.csproj", "{2AA67540-C2AB-4B84-AC1E-2F2F023522AB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "07_WorkingWithGroups", "Examples\07_WorkingWithGroups\07_WorkingWithGroups.csproj", "{36B41EBD-043D-4625-91DB-F8AB5776858B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "07_WorkingWithGroups&Tasks", "Examples\07_WorkingWithGroups\07_WorkingWithGroups&Tasks.csproj", "{36B41EBD-043D-4625-91DB-F8AB5776858B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "08_ImageMetadata", "Examples\08_ImageMetadata\08_ImageMetadata.csproj", "{CF394186-571E-4366-B2CD-B9B5D2B429B2}"
 EndProject
