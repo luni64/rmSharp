@@ -1,14 +1,6 @@
 
 <!-- Template from https://github.com/othneildrew/Best-README-Template>  -->
 <a name="readme-top"></a>
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 
 ![NuGet Version](https://img.shields.io/nuget/v/lunOptics.rmSharp?style=for-the-badge)
 [![Stargazers][stars-shield]][stars-url]
@@ -27,7 +19,7 @@
 
   <p align="center">
     Entity Framework Core ORM to work with SQLite databases created by
-     <a href="https://www.rootsmagic.com/">RootsMagic</a>
+     <a href="https://www.rootsmagic.com/">RootsMagic &copy;</a>
     <br />
     <br />
     ·
@@ -71,33 +63,22 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-TBD
+[RootsMagic&copy;](https://rootsmagic.com/) is a genealogy application which
+uses an SQLite database to store its data. rmSharp helps working with this
+database in an object oriented way without deeper knowledge of the
+underlying SQL query language. Probably, the main use case is to perform
+more complicated queries which might not be provided by the RootsMagic &copy;
+application.
 
-<!-- Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `luni64`, `rmSharp`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description` -->
+However, rmSharp can also be used to manipulate the database. E.g., to add
+new persons, events, tasks, groups programmatically.
+
+**Disclaimer:** Be sure to back up your database before using rmSharp to make changes. rmSharp is well tested, but bugs that could potentially corrupt your database cannot be excluded. It is recommended that you carefully check the integrity of your database after making changes with rmSharp.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- ### Built With
-
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
-
-
-
-<!-- GETTING STARTED -->
 ## Getting Started
-
-
-
 ### Dependencies
 
 The library was compiled using the community edition of Visual Studio 2022. It depends on the following packages available on nuget:
@@ -105,29 +86,28 @@ The library was compiled using the community edition of Visual Studio 2022. It d
 * [Entity Framework Core Proxies](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Proxies) (Microsoft)
 * [Entity Framework Core SQLite](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Sqlite) (Microsoft)
 * [Delegate Decompiler](https://www.nuget.org/packages/DelegateDecompiler) (Alexander Zaytsev)
+* [Geolocation](https://www.nuget.org/packages/Geolocation) (Scott Schluer)
+
 
 
 ### Installation
 
-* For ease of use, rmSharp is available as a nuget package to be used in your own projects. (TBD!!)
+* For ease of use, rmSharp is available as a [nuget package](https://www.nuget.org/packages/lunOptics.rmSharp/) to be used in your own projects.
 * If you prefer to install rmSharp locally, you can download the repository from GitHub. It contains the required solution (*.sln) and project (*.csproj) files to build the library and the included examples. During the first build, the VS package manager will automatically install all dependencies.
-
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 ## Object Relational Mapping (ORM)
 
-The Entity Framework is the standard Microsoft tool for generating an object-oriented model which abstracts the underlying database. See [this](https://en.wikipedia.org/wiki/Object-relational_mapping) Wikipedia article for details about object relational mapping (ORM). Corresponding tutorials are readily available on the web. See e.g:
+The Entity Framework is the standard Microsoft tool for generating and working with object-oriented models which abstract the underlying database. See [this](https://en.wikipedia.org/wiki/Object-relational_mapping) Wikipedia article for details about object relational mapping (ORM). Corresponding tutorials are readily available on the web. See e.g:
 * https://learn.microsoft.com/en-us/ef/core/get-started/overview/first-app
 * https://learn.microsoft.com/en-us/dotnet/csharp/linq/standard-query-operators/
 
- The rmSharp model uses the following mapping strategy to map database tables to C# tables (i.e., `dbSet<T>` types) and model entities. First of all, the model tables are named after the database tables but remove the "Table" postfix and pluralize the original name.  The table **rows** map to simple POCOs (plain old C# objects) which are named using the singular of the table names. E.g., the database table `NameTable`  maps to the model table `Names` which consists of a collection of `Name` objects. The `TaskTable` maps to a set of `Task` objects and is named `Tasks` etc.
+ The rmSharp model uses the following naming convention to map database tables to C# tables (i.e., `dbSet<T>` types) and model entities. First of all, the model tables are named after the database tables but remove the "Table" postfix and pluralize the original name. The table **rows** map to simple POCOs (plain old C# objects) which are named using the singular of the table names. E.g., the database table `NameTable`  maps to the model table `Names` which consists of a collection of `Name` objects. The `TaskTable` maps to a set of `Task` objects and is named `Tasks` etc.
 
 ### Example: NameTable
 
-Here an example using the database table `NameTable` which has the following structure in the database. (Detailed information about all tables can be found here: https://sqlitetoolsforrootsmagic.com/)
+Here an example using the database table `NameTable` which is structured in the following way. (Detailed information about all tables can be found here: https://sqlitetoolsforrootsmagic.com/)
 
 ```
 CREATE TABLE NameTable (
@@ -202,15 +182,15 @@ where the enums `NameTypes` and `Proof` are defined as
 The first part of the `Name` entity is a more or less a 1:1 translation of the table columns to C# types. For convenience, however, rmSharp introduces
 the following bidirectional conversions:
 
-* The table columns `NameType` and `Proof` are converted from/to `long` to/from C# enumerations.
-* The `IsPrimary` and `IsPrivate` flags are converted from/to `long` to/from boolean values.
-* In the model the table column `UTCModDate` is renamed to `ChangeDate` and is converted from/to an encoded `float` value to/from the standard C#-type `DateTime`.
+* The table columns `NameType` and `Proof` are converted from `long` to C# enumerations.
+* The `IsPrimary` and `IsPrivate` flags are converted from `long` to boolean values.
+* In the model the table column `UTCModDate` is renamed to `ChangeDate` and is converted from an encoded `float` value to the standard C#-type `DateTime`.
 
-The properties in the navigation section of the `Name` entity model the relation to other entities. A `Name` can have zero or many citations which is modeled by the `Citations` collection. Also, it can have one or many Tasks, modeled by the `Tasks` collection. If you query for a `Name` in the `Names` table, the Entity Framework automatically generates an SQL query joining the tables `CitationTable` and `TaskTable` and fills the Citations and Tasks collections correspondingly.
+The properties in the **navigation** section of the `Name` entity model the relation to other entities. A `Name` can have zero or many citations which is modeled by the `Citations` collection. Also, it can have one or many Tasks, modeled by the `Tasks` collection. If you query for a `Name` in the `Names` table, the Entity Framework automatically generates an SQL query joining the tables `CitationTable` and `TaskTable` and fills the Citations and Tasks collections correspondingly.
 
 ## Usage Examples
 
-Here some simple examples showing how to use the library. The corresponding project files can be found in the `Examples` folder of the repository. All examples use the databases in the folder `Examples\example_databases`
+Here some simple examples showing how to use the library. The corresponding project files can be found in the folder `src/Examples` of the repository. The examples use various databases stored in the folder `src/Examples/example_databases`
 
 ### Print all Primary Names
 
@@ -257,12 +237,12 @@ Record Margaret
 ...
 ```
 
-To query the database the Entity Framework automatically generates the required SQL command and sends it to the database. We can have a look at this SQL command by adding
+To query the database the Entity Framework automatically generates the required SQL command and sends it to the database. We can have a look at the generated SQL command by adding
 
 ```C#
 Console.WriteLine(primaryNames.ToQueryString());
 ```
-to the code above to get:
+to the code above. This will print:
 ```
 SELECT *
 FROM "NameTable" AS "n"
@@ -272,7 +252,7 @@ ORDER BY "n"."Surname"
 
 ### Persons, Children and Events
 
-Here a more interesting example showing how to query the PersonTable. The code first filters the persons for all male individuals having the surname "Jefferson". It then uses the `Events` navigation property of the found individuals and filter those for a birth event. If it found one, it reads out the `Date` property of the event and adds it to the printout of the individuals name. Finally it uses the `Children` navigation property to print all children belonging to the person.
+Here a more interesting example showing how to query the PersonTable. The code first filters the persons for all male individuals having the surname "Jefferson". It then uses the `Events` navigation property of the found individuals and filters those for a birth event. If it found one, it reads out the `Date` property of the event and adds it to the printout of the individuals name. Finally it uses the `Children` navigation property to print all children belonging to the person.
 
 ```c#
  static void Main(string[] args)
@@ -339,7 +319,6 @@ Jefferson Thomas (*)
 **For more examples, please refer to the [Example folder](../src/Examples/)**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- LICENSE -->
