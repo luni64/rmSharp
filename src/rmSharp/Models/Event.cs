@@ -31,6 +31,7 @@ namespace rmSharp
         public virtual FactType FactType { get; set; } = null!;
 
         public virtual Place? Place { get; set; }
+        public virtual Place? Site { get; set; }
         public virtual ICollection<Citation> Citations { get; set; } = [];
         public virtual ICollection<Medium> Media { get; set; } = [];
         public virtual ICollection<Task> Tasks { get; set; } = [];

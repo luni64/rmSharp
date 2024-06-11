@@ -22,7 +22,7 @@ namespace rmSharp
         public virtual DbSet<AncestryTable> AncestryTable { get; set; }
         public virtual DbSet<ChildInfo> ChildTable { get; set; }
         public virtual DbSet<CitationLinkTable> CitationLinkTables { get; set; }
-        public virtual DbSet<Citation> Citations { get; set; }       
+        public virtual DbSet<Citation> Citations { get; set; }
         public virtual DbSet<ConfigTable> ConfigTables { get; set; }
         public virtual DbSet<Event> Events { get; set; }
         public virtual DbSet<ExclusionTable> ExclusionTables { get; set; }
@@ -97,7 +97,6 @@ namespace rmSharp
                 entity.HasDiscriminator<long>(e => e.AddressType).HasValue(1);
             });
 
-
             modelBuilder.Entity<AncestryTable>(entity =>
             {
                 entity.ToTable("AncestryTable");
@@ -142,7 +141,7 @@ namespace rmSharp
             {
                 entity.ToTable("CitationTable");
                 entity.HasKey(e => e.CitationId);
-              
+
                 entity.Property(e => e.CitationId).HasColumnName("CitationID").ValueGeneratedOnAdd();
                 entity.Property(e => e.SourceId).HasColumnName("SourceID");
                 entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
@@ -158,7 +157,7 @@ namespace rmSharp
                 entity.HasIndex(e => e.CitationName, "idxCitationName");
                 entity.HasIndex(e => e.SourceId, "idxCitationSourceID");
             });
-                
+
             modelBuilder.Entity<CitationLinkTable>(entity =>
             {
                 entity.ToTable("CitationLinkTable");
@@ -182,7 +181,7 @@ namespace rmSharp
             });
             modelBuilder.Entity<EventCitationLink>(entity =>
             {
-                entity.ToTable("CitationLinkTable").HasDiscriminator<long>(e => e.OwnerType).HasValue(2);               
+                entity.ToTable("CitationLinkTable").HasDiscriminator<long>(e => e.OwnerType).HasValue(2);
             });
             modelBuilder.Entity<NameCitationLink>(entity =>
             {
@@ -214,6 +213,8 @@ namespace rmSharp
                 entity.Property(e => e.SortDate).HasColumnType("BIGINT");
                 entity.Property(e => e.ChangeDate).HasColumnName("UTCModDate").HasColumnType("FLOAT").HasConversion(e => e.toUTCModDate(), e => e.toDateTime());
                 entity.Property(e => e.Date).HasConversion(rmd => rmd.toRmDatestring(), ds => new rmSharp.RMDate(ds));
+
+                entity.HasOne(e => e.Site).WithOne().HasForeignKey<Event>(e => e.SiteId);
 
                 entity.HasOne(e => e.FactType).WithMany().HasForeignKey(f => f.EventType);
                 entity.HasOne(e => e.Place).WithMany().HasForeignKey(p => p.PlaceId);
@@ -504,9 +505,8 @@ namespace rmSharp
                 entity.ToTable("PlaceTable");
                 entity.HasKey(e => e.PlaceId);
                 entity.Ignore(e => e.Location);
-                entity.Property(e => e.PlaceId).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.PlaceId).HasColumnName("PlaceID");
+                entity.Property(e => e.PlaceId).HasColumnName("PlaceID").ValueGeneratedOnAdd();
+                             
                 entity.Property(e => e.AnId).HasColumnName("anID");
                 entity.Property(e => e.FsId).HasColumnName("fsID");
                 entity.Property(e => e.MasterId).HasColumnName("MasterID");
@@ -517,12 +517,12 @@ namespace rmSharp
                 entity.HasMany(p => p.Tasks).WithMany().UsingEntity<TaskPlace>(
                    l => l.HasOne<Task>().WithMany().HasForeignKey(e => e.TaskId),
                    r => r.HasOne<Place>().WithMany().HasForeignKey(e => e.OwnerId));
-
+                             
                 entity.HasIndex(e => e.Abbrev, "idxPlaceAbbrev");
                 entity.HasIndex(e => e.Name, "idxPlaceName");
                 entity.HasIndex(e => e.Reverse, "idxReversePlaceName");
             });
-
+                      
             modelBuilder.Entity<RoleTable>(entity =>
             {
                 entity.ToTable("RoleTable");
@@ -543,7 +543,7 @@ namespace rmSharp
 
                 entity.HasMany(e => e.WebTags).WithOne().HasForeignKey(e => e.OwnerId);
 
-                entity.HasMany(s => s.Repositories).WithMany(r=>r.Sources).UsingEntity<RepositorySource>(
+                entity.HasMany(s => s.Repositories).WithMany(r => r.Sources).UsingEntity<RepositorySource>(
                     l => l.HasOne<Repository>().WithMany().HasForeignKey(e => e.AddressId),
                     r => r.HasOne<Source>().WithMany().HasForeignKey(e => e.OwnerId));
 
@@ -677,9 +677,7 @@ namespace rmSharp
 
                 entity.HasIndex(e => e.EventId, "idxWitnessEventID");
                 entity.HasIndex(e => e.PersonId, "idxWitnessPersonID");
-            });
-
-            //OnModelCreatingPartial(modelBuilder);
+            });          
         }
 
         public Dictionary<string, long> EventIDs => _factTypeDict ??= FactTypes.ToDictionary(f => f.Name, x => x.FactTypeId); // lazy load values
