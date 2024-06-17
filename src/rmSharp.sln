@@ -29,6 +29,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "08_ImageMetadata", "Example
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "09_Sources", "Examples\09_Sources\09_Sources.csproj", "{0C927970-E3CF-4420-A209-C001B1B7FC44}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TreeView", "Examples\WPF\TreeView\TreeView.csproj", "{DE21651B-BD02-449E-8F2B-E907E720A8B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CB0329E2-1AC5-4D29-9FE8-0B40952A4934}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +90,10 @@ Global
 		{0C927970-E3CF-4420-A209-C001B1B7FC44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C927970-E3CF-4420-A209-C001B1B7FC44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C927970-E3CF-4420-A209-C001B1B7FC44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE21651B-BD02-449E-8F2B-E907E720A8B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE21651B-BD02-449E-8F2B-E907E720A8B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE21651B-BD02-449E-8F2B-E907E720A8B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE21651B-BD02-449E-8F2B-E907E720A8B4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +109,7 @@ Global
 		{36B41EBD-043D-4625-91DB-F8AB5776858B} = {6A783C0E-ADA4-45D6-BBE7-1474ECCE7B03}
 		{CF394186-571E-4366-B2CD-B9B5D2B429B2} = {6A783C0E-ADA4-45D6-BBE7-1474ECCE7B03}
 		{0C927970-E3CF-4420-A209-C001B1B7FC44} = {6A783C0E-ADA4-45D6-BBE7-1474ECCE7B03}
+		{DE21651B-BD02-449E-8F2B-E907E720A8B4} = {6A783C0E-ADA4-45D6-BBE7-1474ECCE7B03}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8C727B52-36CE-4BAF-9000-C07866DD55F8}
